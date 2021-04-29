@@ -3,8 +3,14 @@ import { useSession } from "next-auth/client"
 import { useRouter } from 'next/router'
 import Head from "next/head"
 import Link from "next/link"
+
 import { RichText } from "prismic-dom"
+
 import { useEffect } from "react"
+
+import { format, parseISO } from 'date-fns'
+import ptBr from 'date-fns/locale/pt-BR'
+
 import { getPrismicClient } from "../../../services/prismic"
 
 import styles from '../post.module.scss'
@@ -72,10 +78,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         slug,
         title: RichText.asText(response.data.title),
         content: RichText.asHtml(response.data.content.splice(0, 3)),
-        updatedAt: new Date(response.last_publication_date).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric'
+        updatedAt: format(parseISO(response.last_publication_date), 'd MMMM y', {
+            locale: ptBr
         })
     }
 
